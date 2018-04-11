@@ -13,7 +13,6 @@ public class termenine extends Robot {
     public void run() {
         while(true) {
             turnRadarLeft(360);
-
         }
     }
 }
