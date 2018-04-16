@@ -10,6 +10,8 @@ public class Shady extends Robot{
 
     @Override
     public void run() {
+        double mapX = getBattleFieldWidth();
+        double mapY = getBattleFieldHeight();
         while(true) {
             if(getX() > 40) {
 
