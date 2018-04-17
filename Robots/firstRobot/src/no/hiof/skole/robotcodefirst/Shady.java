@@ -1,14 +1,13 @@
 package no.hiof.skole.robotcodefirst;
 
 
-import robocode.Robot;
-import robocode.RobotDeathEvent;
-import robocode.ScannedRobotEvent;
+import robocode.*;
 
 public class Shady extends Robot {
     boolean turnRight = true;
     int opponentsRemaining;
-    boolean goFroBroke = false;
+    boolean goForBroke = false;
+    int direction = 1;
 
     @Override
     public void run() {
@@ -17,15 +16,13 @@ public class Shady extends Robot {
         while(true) {
             if (opponentsRemaining > 1) {
                 if (getX() > 40) {
-
                     moveToCorner();
                 } else {
                     upAndDownShooting();
                 }
             } else {
-                goFroBroke = true;
+                goForBroke = true;
                 turnRadarRight(360);
-
             }
         }
     }
@@ -51,7 +48,7 @@ public class Shady extends Robot {
     @Override
     public void onScannedRobot(ScannedRobotEvent event) {
 
-        if(goFroBroke) {
+        if(goForBroke) {
             turnRight(event.getBearing());
             turnGunRight(getHeading() - getGunHeading() + event.getBearing());
             ahead(event.getDistance() + 5);
@@ -59,12 +56,48 @@ public class Shady extends Robot {
             scan();
         }
 
-        fire(2);
-
+        if (event.getDistance() < 100)
+            fire(3);
+        else if (event.getDistance() < 150)
+            fire(2.5);
+        else if (event.getDistance() < 200)
+            fire(2);
+        else if (event.getDistance() < 250)
+            fire(1.5);
+        else if (event.getDistance() < 300)
+            fire(1);
+        else if (event.getDistance() < 400)
+            fire(0.5);
+        else
+            fire(0.1);
     }
 
     @Override
     public void onRobotDeath(RobotDeathEvent event) {
         opponentsRemaining--;
+    }
+
+    @Override
+    public void onHitWall(HitWallEvent event) {
+        direction *= -1;
+    }
+
+    @Override
+    public void onHitRobot(HitRobotEvent event) {
+        if(!event.isMyFault()){
+            if (event.getBearing() > -90 && event.getBearing() <= 90) {
+                back(100);
+            } else {
+                ahead(100);
+            }
+        }
+    }
+
+    @Override
+    public void onWin(WinEvent event) {
+        while (true) {
+            ahead(5);
+            back(5);
+        }
     }
 }
